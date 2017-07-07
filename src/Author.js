@@ -1,29 +1,14 @@
 import React, { Component } from 'react';
 import CustomInput from './components/CustomInput';
 import CustomSubmitButton from './components/CustomSubmitButton';
+import PubSub from 'pubsub-js';
 
 export default class AuthorBox extends Component {
-	constructor() {
-		super();
-		this.state = { authorList: [] };
-	}
-
-	componentDidMount() {
-		fetch('http://cdc-react.herokuapp.com/api/autores')
-			.then(response => response.json())
-			.then(response => this.setState({ authorList: response }))
-			.catch(error => console.log(error));
-	}
-
-	refresh(list) {
-		this.setState({ authorList: list });
-	}
-
 	render() {
 		return (
 			<div>
-				<AuthorForm refresh={this.refresh.bind(this)} />
-				<AuthorTable list={this.state.authorList} />
+				<AuthorForm />
+				<AuthorTable />
 			</div>
 		);
 	}
@@ -50,7 +35,7 @@ class AuthorForm extends Component {
 			})
 		})
 			.then(response => response.json())
-			.then(response => this.props.refresh(response))
+			.then(response => PubSub.publish('new-author-list', response))
 			.catch(error => console.log(error));
 	}
 
@@ -104,6 +89,22 @@ class AuthorForm extends Component {
 }
 
 class AuthorTable extends Component {
+	constructor() {
+		super();
+		this.state = { authorList: [] };
+	}
+
+	componentDidMount() {
+		fetch('http://cdc-react.herokuapp.com/api/autores')
+			.then(response => response.json())
+			.then(response => this.setState({ authorList: response }))
+			.catch(error => console.log(error));
+
+		PubSub.subscribe('new-author-list', (topic, newAuthorList) => {
+			this.setState({ authorList: newAuthorList });
+		});
+	}
+
 	render() {
 		return (
 			<div>
@@ -115,7 +116,7 @@ class AuthorTable extends Component {
 						</tr>
 					</thead>
 					<tbody>
-						{this.props.list.map(author =>
+						{this.state.authorList.map(author =>
 							<tr key={author.id}>
 								<td>
 									{author.nome}
