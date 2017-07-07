@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import CustomInput from './components/CustomInput';
 import CustomSubmitButton from './components/CustomSubmitButton';
 import PubSub from 'pubsub-js';
+import ErrorHandler from './ErrorHandler';
 
 export default class AuthorBox extends Component {
 	render() {
@@ -22,6 +23,7 @@ class AuthorForm extends Component {
 
 	sendForm(event) {
 		event.preventDefault();
+		PubSub.publish('clean-error', {});
 		fetch('http://cdc-react.herokuapp.com/api/autores', {
 			headers: {
 				Accept: 'application/json',
@@ -34,9 +36,13 @@ class AuthorForm extends Component {
 				senha: this.state.senha
 			})
 		})
+			.then(response => new ErrorHandler().handle(response))
 			.then(response => response.json())
-			.then(response => PubSub.publish('new-author-list', response))
-			.catch(error => console.log(error));
+			.then(response => {
+				PubSub.publish('new-author-list', response);
+				this.setState({ nome: '', email: '', senha: '' });
+			})
+			.catch(error => new ErrorHandler().publish(error));
 	}
 
 	setNome(event) {
@@ -100,7 +106,7 @@ class AuthorTable extends Component {
 			.then(response => this.setState({ authorList: response }))
 			.catch(error => console.log(error));
 
-		PubSub.subscribe('new-author-list', (topic, newAuthorList) => {
+		PubSub.subscribe('new-author-list', (channel, newAuthorList) => {
 			this.setState({ authorList: newAuthorList });
 		});
 	}
