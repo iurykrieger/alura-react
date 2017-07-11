@@ -71,16 +71,8 @@ class BookForm extends Component {
 			.catch(error => new ErrorHandler().publish(error));
 	}
 
-	setTitulo(event) {
-		this.setState({ titulo: event.target.value });
-	}
-
-	setPreco(event) {
-		this.setState({ preco: event.target.value });
-	}
-
-	setAutorId(event) {
-		this.setState({ autorId: event.target.value });
+	onChange(inputName, event) {
+		this.setState({ [inputName]: event.target.value });
 	}
 
 	render() {
@@ -96,14 +88,14 @@ class BookForm extends Component {
 						id="titulo"
 						type="text"
 						value={this.state.titulo}
-						onChange={this.setTitulo.bind(this)}
+						onChange={this.onChange.bind(this, 'titulo')}
 					/>
 					<CustomInput
 						label="Preço"
 						id="preco"
 						type="number"
 						value={this.state.preco}
-						onChange={this.setPreco.bind(this)}
+						onChange={this.onChange.bind(this, 'preco')}
 					/>
 					<div className="pure-control-group">
 						<label htmlFor="autorId">Autor</label>
@@ -111,7 +103,7 @@ class BookForm extends Component {
 							name="autorId"
 							id="autorId"
 							value={this.state.autorId}
-							onChange={this.setAutorId.bind(this)}
+							onChange={this.onChange.bind(this, 'autorId')}
 						>
 							<option value="">-- Selecione um autor --</option>
 							{this.state.autorList.map(autor =>

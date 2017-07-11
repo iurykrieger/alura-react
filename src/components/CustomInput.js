@@ -26,13 +26,7 @@ export default class CustomInput extends Component {
 				<label htmlFor={this.props.id}>
 					{this.props.label}
 				</label>
-				<input
-					id={this.props.id}
-					type={this.props.type}
-					name={this.props.id}
-					value={this.props.value}
-					onChange={this.props.onChange}
-				/>
+				<input {...this.props} />
 				<span className="validation">
 					{this.state.error.defaultMessage}
 				</span>

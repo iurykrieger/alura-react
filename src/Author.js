@@ -60,16 +60,8 @@ class AuthorForm extends Component {
 			.catch(error => new ErrorHandler().publish(error));
 	}
 
-	setNome(event) {
-		this.setState({ nome: event.target.value });
-	}
-
-	setEmail(event) {
-		this.setState({ email: event.target.value });
-	}
-
-	setSenha(event) {
-		this.setState({ senha: event.target.value });
+	onChange(inputName, event) {
+		this.setState({ [inputName]: event.target.value });
 	}
 
 	render() {
@@ -85,21 +77,21 @@ class AuthorForm extends Component {
 						id="nome"
 						type="text"
 						value={this.state.nome}
-						onChange={this.setNome.bind(this)}
+						onChange={this.onChange.bind(this, 'nome')}
 					/>
 					<CustomInput
 						label="Email"
 						id="email"
 						type="email"
 						value={this.state.email}
-						onChange={this.setEmail.bind(this)}
+						onChange={this.onChange.bind(this, 'email')}
 					/>
 					<CustomInput
 						label="Senha"
 						id="senha"
 						type="password"
 						value={this.state.senha}
-						onChange={this.setSenha.bind(this)}
+						onChange={this.onChange.bind(this, 'senha')}
 					/>
 					<CustomSubmitButton label="Salvar" />
 					<br />
