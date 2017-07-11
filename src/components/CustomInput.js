@@ -9,6 +9,7 @@ export default class CustomInput extends Component {
 
 	componentDidMount() {
 		PubSub.subscribe('validation-error', (channel, error) => {
+			console.log(error);
 			if (error.field == this.props.id) {
 				this.setState({ error: error });
 			}

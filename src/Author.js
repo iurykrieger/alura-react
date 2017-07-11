@@ -4,7 +4,22 @@ import CustomSubmitButton from './components/CustomSubmitButton';
 import PubSub from 'pubsub-js';
 import ErrorHandler from './ErrorHandler';
 
-export default class AuthorBox extends Component {
+export default class Author extends Component {
+	render() {
+		return (
+			<div id="main">
+				<div className="header">
+					<h1>Cadastro de Autores</h1>
+				</div>
+				<div className="content" id="content">
+					<AuthorBox />
+				</div>
+			</div>
+		);
+	}
+}
+
+class AuthorBox extends Component {
 	render() {
 		return (
 			<div>
